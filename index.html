@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perse Aspire Track - Year 10 CS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --page-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            --accent: #fbbf24;
+            --accent-hover: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 70%, rgba(236, 72, 153, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(14, 116, 144, 0.1) 0%, transparent 60%),
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        .scale-wrapper {
+            transform: scale(1);
+            transition: transform 0.3s;
+        }
+
+        @media (max-width: 900px) { .scale-wrapper { transform: scale(0.8); } }
+        @media (max-width: 700px) { .scale-wrapper { transform: scale(0.6); } }
+        @media (max-width: 500px) { .scale-wrapper { transform: scale(0.45); } }
+
+        .cb { display: none; }
+
+        .book-container {
+            width: 800px;
+            height: 560px;
+            perspective: 2500px;
+            display: flex;
+            justify-content: flex-end;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transform: translateX(-200px);
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
+        }
+
+        #c1:checked ~ .book-container { transform: translateX(0); }
+        #c3:checked ~ .book-container { transform: translateX(200px); }
+
+        .book {
+            width: 400px;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+        }
+
+        .leaf {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1), z-index 0s 0.4s;
+        }
+
+        #l1 { z-index: 3; }
+        #l2 { z-index: 2; }
+        #l3 { z-index: 1; }
+
+        #c1:checked ~ .book-container .book #l1 { transform: rotateY(-180deg); z-index: 1; }
+        #c2:checked ~ .book-container .book #l2 { transform: rotateY(-180deg); z-index: 2; }
+        #c3:checked ~ .book-container .book #l3 { transform: rotateY(-180deg); z-index: 3; }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            background-color: #1e293b;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 4px 16px 16px 4px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+                var(--page-bg);
+            background-size: 20px 20px, 20px 20px, 100% 100%;
+        }
+
+        .page.back {
+            transform: rotateY(180deg);
+            border-radius: 16px 4px 4px 16px;
+        }
+
+        .spine-shadow-front {
+            position: absolute; top: 0; left: 0; width: 40px; height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.6), transparent);
+            pointer-events: none;
+        }
+        .spine-shadow-back {
+            position: absolute; top: 0; right: 0; width: 40px; height: 100%;
+            background: linear-gradient(to left, rgba(0,0,0,0.6), transparent);
+            pointer-events: none;
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; text-transform: uppercase; }
+        
+        .cover-content { text-align: center; margin-top: 60px; }
+        .aspire-title {
+            font-size: 3.2rem;
+            line-height: 1;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.4);
+            margin-bottom: 10px;
+        }
+        .subtitle { color: var(--text-muted); font-size: 1rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+
+        .page-header {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(251, 191, 36, 0.3);
+            padding-bottom: 10px;
+        }
+
+        p { line-height: 1.6; margin-bottom: 15px; font-size: 0.95rem; color: #cbd5e1; }
+
+        .info-box {
+            background: rgba(255,255,255,0.03);
+            border-left: 3px solid var(--accent);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        ul.checklist { list-style: none; margin-bottom: 20px; }
+        ul.checklist li { margin-bottom: 12px; display: flex; align-items: flex-start; font-size: 0.9rem;}
+        ul.checklist li::before { content: "✓"; color: var(--accent); font-weight: bold; margin-right: 10px; font-size: 1.1rem; }
+
+        .curriculum-ui {
+            background: #404040;
+            border-radius: 6px;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+            margin-top: 10px;
+        }
+        .curr-item { display: flex; align-items: center; font-size: 0.8rem; color: #f3f4f6; font-weight: 500; }
+        .curr-marker { width: 6px; height: 18px; border-radius: 3px; margin-right: 12px; flex-shrink: 0; }
+        .curr-marker.yellow { background: #eab308; }
+        .curr-marker.green { background: #16a34a; }
+        .curr-marker.pink { background: #d946ef; }
+        .curr-marker.red { background: #ef4444; }
+        .curr-dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; margin-left: 8px; opacity: 0.9; }
+
+        .badge-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .badge {
+            background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #93c5fd; padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center;
+        }
+        .badge::before { content: "</>"; margin-right: 10px; color: #60a5fa; font-family: monospace; font-size: 1.1rem;}
+
+        .controls { margin-top: auto; display: flex; justify-content: space-between; position: relative; z-index: 10; }
+        .controls.right { justify-content: flex-end; }
+        .controls.center { justify-content: center; }
+
+        .btn {
+            display: inline-block; padding: 10px 20px; background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; cursor: pointer; color: var(--text-main);
+            font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;
+            transition: all 0.3s ease; user-select: none;
+        }
+        .btn:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
+        .btn.primary { background: var(--accent); color: #000; border: none; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2); }
+        .btn.primary:hover { background: var(--accent-hover); box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4); }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, transparent 100%);
+            border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 8px; padding: 15px; text-align: center; margin-top: 15px;
+        }
+        
+        .qr-code-img {
+            width: 80px; height: 80px; border: 2px solid var(--accent); border-radius: 6px; padding: 2px; background: #fff; transition: all 0.3s ease;
+        }
+        .qr-code-img:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(251, 191, 36, 0.5); }
+
+    </style>
+</head>
+<body>
+
+<div class="scale-wrapper">
+    <input type="checkbox" id="c1" class="cb">
+    <input type="checkbox" id="c2" class="cb">
+    <input type="checkbox" id="c3" class="cb">
+
+    <div class="book-container">
+        <div class="book">
+
+            <div class="leaf" id="l1">
+                <!-- Cover -->
+                <div class="page front">
+                    <div class="spine-shadow-front"></div>
+                    <div class="cover-content">
+                        <h2 style="color: var(--text-muted); font-size: 1.2rem; margin-bottom: 5px;">PERSE</h2>
+                        <h1 class="aspire-title">ASPIRE</h1>
+                        <h2 style="font-size: 1.5rem; letter-spacing: 5px; color: #fff;">TRACK</h2>
+                        <p class="subtitle" style="margin-top: 40px;">Year 10 Computer Science</p>
+                        <p class="subtitle" style="font-size: 0.8rem; color: #64748b;">Extension Track</p>
+                    </div>
+                    <div class="controls center" style="margin-top: auto; padding-bottom: 20px;">
+                        <label for="c1" class="btn primary">Open Portfolio</label>
+                    </div>
+                </div>
+
+                <!-- Page 2: Overview -->
+                <div class="page back">
+                    <div class="spine-shadow-back"></div>
+                    <h2 class="page-header" style="margin-bottom: 15px;">Overview</h2>
+                    <p style="margin-bottom: 10px;">Welcome to the ultimate Computer Science extension for Year 10. The Perse Aspire Track is designed to push your logic, reasoning, and coding skills to the next level.</p>
+                    
+                    <div class="info-box">
+                        <h3 style="font-size: 1rem; color: var(--accent); margin-bottom: 8px;">Admission</h3>
+                        <p style="margin-bottom: 10px; font-size: 0.85rem;">This is a strictly <strong>opt-in</strong> programme. To secure your place, you must complete an initial <strong>suitability activity</strong>.</p>
+                        
+                        <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                            <p style="font-size: 0.75rem; color: var(--accent); margin-bottom: 8px; font-weight: bold; text-transform: uppercase;">Scan to enroll</p>
+                            <a href="https://forms.microsoft.com/e/phkjR4Rf72" target="_blank" title="Click or Scan to Enroll">
+                                <img class="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://forms.microsoft.com/e/phkjR4Rf72&color=000000&bgcolor=ffffff" alt="Enrollment QR Code">
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="info-box" style="margin-bottom: 15px;">
+                        <h3 style="font-size: 1rem; color: var(--accent); margin-bottom: 5px;">Certification</h3>
+                        <p style="margin-bottom: 0; font-size: 0.85rem;">This is a <strong>completion-based</strong> programme. Formal certification is awarded to those who successfully get through all activities.</p>
+                    </div>
+
+                    <div class="controls">
+                        <label for="c1" class="btn">Prev</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="leaf" id="l2">
+                <!-- Page 3: Curriculum -->
+                <div class="page front">
+                    <div class="spine-shadow-front"></div>
+                    <h2 class="page-header">The Roadmap</h2>
+                    <p>A rigorous sequence of activities builds your capability across the academic year:</p>
+                    
+                    <div class="curriculum-ui">
+                        <div class="curr-item">
+                            <div class="curr-marker yellow"></div> 
+                            Michaelmas - Competitive programming foundations
+                        </div>
+                        <div class="curr-item">
+                            <div class="curr-marker green"></div> 
+                            Lent 1 - Interview Reasoning <span class="curr-dot"></span>
+                        </div>
+                        <div class="curr-item">
+                            <div class="curr-marker pink"></div> 
+                            Lent 2 - Improving larger Python programs and adding persistent data <span class="curr-dot"></span>
+                        </div>
+                        <div class="curr-item">
+                            <div class="curr-marker red"></div> 
+                            Summer - Independent project and showcase
+                        </div>
+                    </div>
+
+                    <div class="controls right">
+                        <label for="c2" class="btn primary">Next</label>
+                    </div>
+                </div>
+
+                <!-- Page 4: Competitive Coding -->
+                <div class="page back">
+                    <div class="spine-shadow-back"></div>
+                    <h2 class="page-header">Competitive Coding</h2>
+                    <p>Theory meets execution. As an Aspire student, you are <strong>required to take all 5</strong> competitive coding opportunities during the year.</p>
+                    
+                    <div class="badge-grid">
+                        <div class="badge">Bebras - Round 1</div>
+                        <div class="badge">Bebras - Round 2</div>
+                        <div class="badge" style="border-color: rgba(236, 72, 153, 0.4); color: #f9a8d4; background: rgba(236, 72, 153, 0.1);">PCTC - Round 1</div>
+                        <div class="badge" style="border-color: rgba(236, 72, 153, 0.4); color: #f9a8d4; background: rgba(236, 72, 153, 0.1);">PCTC - Round 2</div>
+                        <div class="badge" style="border-color: var(--accent); color: var(--accent); background: rgba(251, 191, 36, 0.1);">British Informatics Olympiad (BIO)</div>
+                    </div>
+
+                    <div class="controls">
+                        <label for="c2" class="btn">Prev</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="leaf" id="l3">
+                <!-- Page 5: Expectations -->
+                <div class="page front">
+                    <div class="spine-shadow-front"></div>
+                    <h2 class="page-header">Expectations</h2>
+                    <p style="color: #94a3b8; font-style: italic;">While teachers will be keeping oversight to see if you are on track...</p>
+                    
+                    <h3 style="font-size: 1.1rem; margin: 20px 0 15px; color: #fff;">It is <span style="color: var(--accent)">your responsibility</span> to:</h3>
+                    
+                    <ul class="checklist">
+                        <li>Independently build your completion portfolio during the year.</li>
+                        <li>Proactively enter all competitions when they are advertised.</li>
+                        <li>Manage your time to ensure all rigorous milestones are hit.</li>
+                        <li>Maintain the standard required for the final certification.</li>
+                    </ul>
+
+                    <div class="controls right">
+                        <label for="c3" class="btn primary">The Finale</label>
+                    </div>
+                </div>
+
+                <!-- Page 6: Back Cover -->
+                <div class="page back">
+                    <div class="spine-shadow-back"></div>
+                    
+                    <div style="display: flex; flex-direction: column; justify-content: center; height: 100%;">
+                        <div align="center">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                        </div>
+                        
+                        <div class="highlight-box">
+                            <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 5px;">The Highlight</h3>
+                            <p style="color: var(--accent); font-weight: 600; font-size: 1rem; margin-bottom: 0;">Summer Project &<br>Showcase</p>
+                        </div>
+                        
+                        <p style="text-align: center; margin-top: 15px; font-size: 0.85rem; color: #64748b;">
+                            Prove your skills. Build something extraordinary. Earn your Aspire Certification.
+                        </p>
+
+                        <!-- Added QR Code Section to Back Page -->
+                        <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                            <p style="font-size: 0.75rem; color: var(--accent); margin-bottom: 8px; font-weight: bold; text-transform: uppercase;">Scan to Enroll Now</p>
+                            <a href="https://forms.microsoft.com/e/phkjR4Rf72" target="_blank" title="Click or Scan to Enroll">
+                                <img class="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://forms.microsoft.com/e/phkjR4Rf72&color=000000&bgcolor=ffffff" alt="Enrollment QR Code">
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <label for="c3" class="btn">Close Book</label>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
